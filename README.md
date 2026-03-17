@@ -1,1 +1,1 @@
-# arikmukherjee-edu.github.io
+# arikmukherjee.github.io
