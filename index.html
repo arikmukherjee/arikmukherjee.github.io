@@ -1,128 +1,570 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Modern LinkTree</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-light: #93c5fd;
+            --primary-dark: #1d4ed8;
+            --bg: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            --text: #1e293b;
+            --card: rgba(255, 255, 255, 0.8);
+            --card-hover: rgba(255, 255, 255, 0.95);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --border-radius: 12px;
+        }
+        
+        .dark-mode {
+            --primary: #818cf8;
+            --primary-light: #a5b4fc;
+            --primary-dark: #6366f1;
+            --bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --text: #f8fafc;
+            --card: rgba(30, 41, 59, 0.8);
+            --card-hover: rgba(30, 41, 59, 0.95);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.5s ease;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background bubbles */
+        .bubbles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: rise 15s infinite ease-in;
+        }
+
+        .bubble:nth-child(1) {
+            width: 40px;
+            height: 40px;
+            left: 10%;
+            animation-duration: 8s;
+        }
+
+        .bubble:nth-child(2) {
+            width: 20px;
+            height: 20px;
+            left: 20%;
+            animation-duration: 5s;
+            animation-delay: 1s;
+        }
+
+        .bubble:nth-child(3) {
+            width: 50px;
+            height: 50px;
+            left: 35%;
+            animation-duration: 7s;
+            animation-delay: 2s;
+        }
+
+        .bubble:nth-child(4) {
+            width: 80px;
+            height: 80px;
+            left: 50%;
+            animation-duration: 11s;
+            animation-delay: 0s;
+        }
+
+        .bubble:nth-child(5) {
+            width: 35px;
+            height: 35px;
+            left: 70%;
+            animation-duration: 6s;
+            animation-delay: 1s;
+        }
+
+        .bubble:nth-child(6) {
+            width: 60px;
+            height: 60px;
+            left: 85%;
+            animation-duration: 9s;
+            animation-delay: 3s;
+        }
+
+        @keyframes rise {
+            0% {
+                bottom: -100px;
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(100px);
+            }
+            100% {
+                bottom: 1080px;
+                transform: translateX(-200px);
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            padding: 2rem 1.5rem;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            border: 3px solid var(--primary);
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .bio {
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 400;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .link-card {
+            background-color: var(--card);
+            padding: 1rem 1.25rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .link-card:hover {
+            background-color: var(--card-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .dark-mode .link-card:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .link-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: white;
+            border-radius: 10px;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .link-card:hover .link-icon {
+            background: var(--primary-dark);
+            transform: rotate(5deg) scale(1.1);
+        }
+
+        .link-content {
+            flex-grow: 1;
+        }
+
+        .link-title {
+            font-weight: 600;
+            margin-bottom: 0.15rem;
+            font-size: 1rem;
+        }
+
+        .link-desc {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        .theme-toggle {
+            background: rgba(0, 0, 0, 0.05);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 1.5rem auto 0;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.1);
+            transform: rotate(30deg);
+        }
+
+        .dark-mode .theme-toggle {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-mode .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.75rem;
+            opacity: 0.7;
+            animation: fadeIn 1s ease-out;
+            width: 100%;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-link {
+            color: var(--text);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .social-link:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .social-link {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-mode .social-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .social-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem 1rem;
+            }
+            
+            .avatar {
+                width: 90px;
+                height: 90px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .link-card {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#experience">Experience</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
+    <div class="bubbles">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
 
-    <section id="home" class="intro">
-        <div class="profile-pic">
-            <img src="assets/avatar.jpg" alt="Profile Picture">
-        </div>
-        <h1><span>Hi! I am Arik Mukherjee, a CS Enthusiast... </span></h1>
-        <p>I am a Fullstack Web Developer and teaching Computer Science with over 4 years of experience.</p>
-        <div class="buttons">
-            <button><a href="arikmukerjee.github.io">Get in Touch</a></button>
-            <button><a href="/arik-resume.pdf">Download CV </a></button>
-        </div>
-    </section>
+    <div class="container">
+        <header>
+            <img src="arik.jpg" 
+                 alt="Profile picture" class="avatar">
+            <h1>Arik Mukherjee</h1>
+            <p class="bio">Technophile • Melophile • Bibliophile</p>
+            <button class="theme-toggle" id="themeToggle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <path d="M12 1v2"></path>
+                    <path d="M12 21v2"></path>
+                    <path d="M4.22 4.22l1.42 1.42"></path>
+                    <path d="M18.36 18.36l1.42 1.42"></path>
+                    <path d="M1 12h2"></path>
+                    <path d="M21 12h2"></path>
+                    <path d="M4.22 19.78l1.42-1.42"></path>
+                    <path d="M18.36 5.64l1.42-1.42"></path>
+                </svg>
+            </button>
+        </header>
 
-    <section id="experience-icons" class="experience-icons">
-        <h3>Experience With</h3>
-        <div class="icons">
-            <img src="assets/html.png" alt="HTML5">
-            <img src="assets/css.png" alt="CSS3">
-            <img src="assets/js.png" alt="JavaScript">
-            <img src="assets/react.png" alt="React">
-        </div>
-    </section>
-
-    <section id="projects" class="projects">
-        <h2>Projects</h2>
-        <div class="project-card">
-            <img src="assets/projects/html.jpg" alt="HTML Tutorial">
-            <h3>Power of HTML</h3>
-            <p>HTML Tutorial</p>
-        </div>
-        <div class="project-card">
-            <img src="assets/projects/css.png" alt="CSS Magic">
-            <h3>Unlock CSS Magic</h3>
-            <p>CSS Tutorial</p>
-        </div>
-    </section>
-
-    <section id="experience" class="experience">
-        <h2>Experience</h2>
-        <div class="experience-container">
-            <div class="experience-item">
-                <h3>Lead Software Engineer at Code Merge</h3>
-                <p class="date">May 2024 - July 2024</p>
-                <p class="description">As a member of that community, building scalable cloud architecture and modern web apps.</p>
-            </div>
-            <div class="experience-item">
-                <h3>Data Visualizer at Tata Group</h3>
-                <p class="date">Jan 2025 - Feb 2025</p>
-                <p class="description">Former Data Visualizer intern at Tata Group. Worked on Data Mining.</p>
-            </div>
-            <div class="experience-item">
-                <h3>Computer Science Teacher</h3>
-                <p class="date">Nov 2022 - Present</p>
-                <p class="description">I've been teaching Computer Science since 2022.</p>
-            </div>
-        </div>
-    </section>
-
-    <footer id="contact">
-        <h2>Get in Touch</h2>
-        <p>If you’d like to chat about a project or just say hello, feel free to drop a message!</p>
-
-        <div class="contact-container">
-            <!-- Contact Form -->
-            <form class="contact-form">
-                <div class="form-group">
-                    <label for="name">Your Name</label>
-                    <input type="text" id="name" placeholder="Enter your name" required>
+        <div class="links">
+            <a href="https://youtube.com/@arikmukherjee" target="_blank" class="link-card">
+                <div class="link-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+                        <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+                    </svg>
                 </div>
-                <div class="form-group">
-                    <label for="email">Your Email</label>
-                    <input type="email" id="email" placeholder="Enter your email" required>
+                <div class="link-content">
+                    <div class="link-title">YouTube Channel</div>
+                    <div class="link-desc">Tutorials & creative content</div>
                 </div>
-                <div class="form-group">
-                    <label for="message">Your Message</label>
-                    <textarea id="message" rows="5" placeholder="Type your message here" required></textarea>
-                </div>
-                <button type="submit" class="submit-btn">Send Message</button>
-            </form>
+            </a>
 
-            <!-- Contact Information -->
-            <div class="contact-info">
-                <h3>Let's Connect</h3>
-                <p>Follow me on social media or drop me an email!</p>
-                <div class="social-links">
-                    <a href="https://www.linkedin.com/in/arik-mukherjee/" class="social-link">
-                        <img src="assets/linkedin.png" alt="LinkedIn">
-                        <span>LinkedIn</span>
-                    </a>
-                    <a href="https://github.com/arikmukherjee" class="social-link">
-                        <img src="assets/github.png" alt="GitHub">
-                        <span>GitHub</span>
-                    </a>
-                    <a href="https://x.com/ArikMukherjee6" class="social-link">
-                        <img src="assets/twitter.png" alt="Twitter">
-                        <span>Twitter</span>
-                    </a>
+            <a href="https://github.com/arikmukherjee" target="_blank" class="link-card">
+                <div class="link-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
                 </div>
-                <p>Email: <a href="mailto:arikmukherjee@outlook.in">arikmukherjee@outlook.in</a></p>
-            </div>
+                <div class="link-content">
+                    <div class="link-title">GitHub</div>
+                    <div class="link-desc">My open-source projects</div>
+                </div>
+            </a>
+
+            <a href="https://twitter.com/ArikMukherjee6" target="_blank" class="link-card">
+                <div class="link-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                    </svg>
+                </div>
+                <div class="link-content">
+                    <div class="link-title">Twitter</div>
+                    <div class="link-desc">Thoughts & daily updates</div>
+                </div>
+            </a>
+
+            <a href="https://linkedin.com/arik-mukherjee" target="_blank" class="link-card">
+                <div class="link-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                        <rect x="2" y="9" width="4" height="12"></rect>
+                        <circle cx="4" cy="4" r="2"></circle>
+                    </svg>
+                </div>
+                <div class="link-content">
+                    <div class="link-title">LinkedIn</div>
+                    <div class="link-desc">Professional network</div>
+                </div>
+            </a>
+
+            <a href="mailto:arikmukherjee3@gmail.com" class="link-card">
+                <div class="link-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                </div>
+                <div class="link-content">
+                    <div class="link-title">Contact Me</div>
+                    <div class="link-desc">Let's create something awesome</div>
+                </div>
+            </a>
         </div>
-    </footer>
-    <hr>
-    <p><small style="text-align: center;">This site is for testing purpose. <a style="color: rgb(223, 133, 16);" href="https://arikmukherjee-cs.netlify.app/">Visit my site...!!</a></small></p>
+
+        <footer>
+            <div class="social-links">
+                <a href="https://facebook.com/arikmukherjee.cs" target="_blank" class="social-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                    </svg>
+                </a>
+                <a href="https://instagram.com/arikmukherjee3" target="_blank" class="social-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                </a>
+                <a href="https://twitter.com/ArikMukherjee6" target="_blank" class="social-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                    </svg>
+                </a>
+                <a href="https://linkedin.com/arik-mukherjee" target="_blank" class="social-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                        <rect x="2" y="9" width="4" height="12"></rect>
+                        <circle cx="4" cy="4" r="2"></circle>
+                    </svg>
+                </a>
+                <a href="https://github.com/arikmukherjee" target="_blank" class="social-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                </a>
+            </div>
+            <p>© 2025 Arik Mukherjee | All Rights Reserved</p>
+        </footer>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const currentTheme = localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light');
+        
+        // Set initial theme
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+        
+        // Toggle theme with animation
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+            
+            // Add toggle animation
+            themeToggle.style.transform = 'rotate(180deg)';
+            setTimeout(() => {
+                themeToggle.style.transform = 'rotate(0)';
+            }, 300);
+        });
+
+        // Add ripple effect to link cards
+        document.querySelectorAll('.link-card').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Remove any existing ripples
+                const existingRipples = this.querySelectorAll('.ripple');
+                existingRipples.forEach(ripple => ripple.remove());
+                
+                // Create ripple
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                this.appendChild(ripple);
+                
+                // Position ripple
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = `${size}px`;
+                ripple.style.left = `${e.clientX - rect.left - size/2}px`;
+                ripple.style.top = `${e.clientY - rect.top - size/2}px`;
+                
+                // Remove ripple after animation
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Style for ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.4);
+                transform: scale(0);
+                animation: ripple 600ms linear;
+                pointer-events: none;
+            }
+            
+            .dark-mode .ripple {
+                background: rgba(0, 0, 0, 0.2);
+            }
+            
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
-
 </html>
