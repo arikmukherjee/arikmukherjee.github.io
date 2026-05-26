@@ -1,570 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern LinkTree</title>
-    <style>
-        :root {
-            --primary: #3b82f6;
-            --primary-light: #93c5fd;
-            --primary-dark: #1d4ed8;
-            --bg: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            --text: #1e293b;
-            --card: rgba(255, 255, 255, 0.8);
-            --card-hover: rgba(255, 255, 255, 0.95);
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            --border-radius: 12px;
-        }
-        
-        .dark-mode {
-            --primary: #818cf8;
-            --primary-light: #a5b4fc;
-            --primary-dark: #6366f1;
-            --bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            --text: #f8fafc;
-            --card: rgba(30, 41, 59, 0.8);
-            --card-hover: rgba(30, 41, 59, 0.95);
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg);
-            color: var(--text);
-            transition: background 0.5s ease;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Animated background bubbles */
-        .bubbles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 0;
-        }
-
-        .bubble {
-            position: absolute;
-            bottom: -100px;
-            background: var(--primary-light);
-            border-radius: 50%;
-            opacity: 0.5;
-            animation: rise 15s infinite ease-in;
-        }
-
-        .bubble:nth-child(1) {
-            width: 40px;
-            height: 40px;
-            left: 10%;
-            animation-duration: 8s;
-        }
-
-        .bubble:nth-child(2) {
-            width: 20px;
-            height: 20px;
-            left: 20%;
-            animation-duration: 5s;
-            animation-delay: 1s;
-        }
-
-        .bubble:nth-child(3) {
-            width: 50px;
-            height: 50px;
-            left: 35%;
-            animation-duration: 7s;
-            animation-delay: 2s;
-        }
-
-        .bubble:nth-child(4) {
-            width: 80px;
-            height: 80px;
-            left: 50%;
-            animation-duration: 11s;
-            animation-delay: 0s;
-        }
-
-        .bubble:nth-child(5) {
-            width: 35px;
-            height: 35px;
-            left: 70%;
-            animation-duration: 6s;
-            animation-delay: 1s;
-        }
-
-        .bubble:nth-child(6) {
-            width: 60px;
-            height: 60px;
-            left: 85%;
-            animation-duration: 9s;
-            animation-delay: 3s;
-        }
-
-        @keyframes rise {
-            0% {
-                bottom: -100px;
-                transform: translateX(0);
-            }
-            50% {
-                transform: translateX(100px);
-            }
-            100% {
-                bottom: 1080px;
-                transform: translateX(-200px);
-            }
-        }
-
-        .container {
-            width: 100%;
-            max-width: 420px;
-            padding: 2rem 1.5rem;
-            z-index: 1;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 1.5rem;
-            border: 3px solid var(--primary);
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .avatar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4);
-        }
-
-        h1 {
-            font-size: 1.7rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--text);
-        }
-
-        .bio {
-            opacity: 0.8;
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-            font-weight: 400;
-            max-width: 300px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.5;
-        }
-
-        .links {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            animation: slideUp 0.8s ease-out;
-        }
-
-        .link-card {
-            background-color: var(--card);
-            padding: 1rem 1.25rem;
-            border-radius: var(--border-radius);
-            text-decoration: none;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transform: translateY(0);
-            transition: all 0.3s ease;
-        }
-
-        .link-card:hover {
-            background-color: var(--card-hover);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .dark-mode .link-card:hover {
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .link-icon {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--primary);
-            color: white;
-            border-radius: 10px;
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-        }
-
-        .link-card:hover .link-icon {
-            background: var(--primary-dark);
-            transform: rotate(5deg) scale(1.1);
-        }
-
-        .link-content {
-            flex-grow: 1;
-        }
-
-        .link-title {
-            font-weight: 600;
-            margin-bottom: 0.15rem;
-            font-size: 1rem;
-        }
-
-        .link-desc {
-            font-size: 0.8rem;
-            opacity: 0.8;
-            font-weight: 400;
-        }
-
-        .theme-toggle {
-            background: rgba(0, 0, 0, 0.05);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            margin: 1.5rem auto 0;
-            color: var(--text);
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            background: rgba(0, 0, 0, 0.1);
-            transform: rotate(30deg);
-        }
-
-        .dark-mode .theme-toggle {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .dark-mode .theme-toggle:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        footer {
-            margin-top: 1.5rem;
-            text-align: center;
-            font-size: 0.75rem;
-            opacity: 0.7;
-            animation: fadeIn 1s ease-out;
-            width: 100%;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .social-link {
-            color: var(--text);
-            opacity: 0.7;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.05);
-        }
-
-        .social-link:hover {
-            opacity: 1;
-            transform: translateY(-2px);
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        .dark-mode .social-link {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .dark-mode .social-link:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .social-icon {
-            width: 18px;
-            height: 18px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from { 
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 480px) {
-            .container {
-                padding: 1.5rem 1rem;
-            }
-            
-            .avatar {
-                width: 90px;
-                height: 90px;
-            }
-            
-            h1 {
-                font-size: 1.5rem;
-            }
-            
-            .link-card {
-                padding: 1rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Arik Mukherjee | Web Developer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="bubbles">
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
+
+<div id="actionModal" class="modal">
+  <div class="modal-box">
+    <i class="fas fa-info-circle"></i>
+    <h4 id="modalTitle">Notice</h4>
+    <p id="modalMessage">Action completed.</p>
+    <button onclick="closeModal()">Got it</button>
+  </div>
+</div>
+
+<nav class="navbar">
+  <div class="container nav-container">
+    <div class="logo">Arik Mukherjee</div>
+    <ul class="nav-links">
+      <li><a href="#" data-page="summary" class="nav-link">Summary</a></li>
+      <li><a href="#" data-page="education" class="nav-link">Education</a></li>
+      <li><a href="#" data-page="experience" class="nav-link">Experience</a></li>
+      <li><a href="#" data-page="projects" class="nav-link">Projects</a></li>
+      <li><a href="#" data-page="skills" class="nav-link">Skills</a></li>
+      <li><a href="#" data-page="ebooks" class="nav-link">E-Books</a></li>
+      <li><a href="#" data-page="research" class="nav-link">Research</a></li>
+      <li><a href="#" data-page="contact" class="nav-link">Contact</a></li>
+    </ul>
+    <div class="theme-selector">
+      <div class="theme-btn theme-orange-btn" data-theme="orange" title="Orange Mechanic"></div>
+      <div class="theme-btn theme-purple-btn" data-theme="purple" title="Purple Disco"></div>
+      <div class="theme-btn theme-blue-btn" data-theme="bluepowder" title="Blue Powder"></div>
+      <div class="theme-btn theme-silver-btn" data-theme="silver" title="Silver"></div>
+      <div class="theme-btn theme-darkgray-btn" data-theme="darkgray" title="Dark Gray"></div>
+      <div class="theme-btn theme-royal-btn" data-theme="royal" title="Royal Blue"></div>
+    </div>
+  </div>
+</nav>
+
+<div class="container dashboard">
+  <aside class="sidebar">
+    <div class="profile-pic-area">
+      <div class="profile-img"><i class="fas fa-user"></i></div>
+      <h3 style="margin-top: 10px;">Arik Mukherjee</h3>
+      <p style="color: var(--accent); font-size: 0.9rem;">Full-Stack Web Developer | MSc Computer Science</p>
+    </div>
+    <div style="margin: 1rem 0;">
+      <a href="#" id="resumeBtn" class="btn" style="width:100%; text-align:center;"><i class="fas fa-download"></i> Download Resume</a>
+    </div>
+    <h3>Sections</h3>
+    <ul class="section-nav">
+      <li><a href="#" data-page="summary" class="side-link">📄 Summary</a></li>
+      <li><a href="#" data-page="education" class="side-link">🎓 Education</a></li>
+      <li><a href="#" data-page="experience" class="side-link">💼 Experience</a></li>
+      <li><a href="#" data-page="projects" class="side-link">🚀 Projects</a></li>
+      <li><a href="#" data-page="skills" class="side-link">📊 Skills</a></li>
+      <li><a href="#" data-page="ebooks" class="side-link">📘 E-Books</a></li>
+      <li><a href="#" data-page="research" class="side-link">📑 Research</a></li>
+      <li><a href="#" data-page="quotes" class="side-link">💬 Quotes</a></li>
+      <li><a href="#" data-page="contact" class="side-link">📞 Contact</a></li>
+    </ul>
+  </aside>
+
+  <div class="main-content">
+    <!-- SUMMARY PAGE -->
+    <div id="page-summary" class="page active-page">
+      <div class="card">
+        <h2><i class="fas fa-user"></i> About Me</h2>
+        <p>Full-stack Web Developer with expertise in modern web technologies and frameworks. Passionate about creating scalable and user-friendly applications. Currently pursuing MSc Computer Science at West Bengal State University.</p>
+      </div>
+      <div class="card">
+        <h2><i class="fas fa-quote-left"></i> Motivational Quote</h2>
+        <div class="quote"><p id="dynamicQuote">“The only limit to our realization of tomorrow is our doubts of today.” – FDR</p></div>
+        <button id="nextQuoteBtn" class="btn btn-outline" style="margin-top:12px;">New Quote</button>
+      </div>
     </div>
 
-    <div class="container">
-        <header>
-            <img src="arik.jpg" 
-                 alt="Profile picture" class="avatar">
-            <h1>Arik Mukherjee</h1>
-            <p class="bio">Technophile • Melophile • Bibliophile</p>
-            <button class="theme-toggle" id="themeToggle">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <path d="M12 1v2"></path>
-                    <path d="M12 21v2"></path>
-                    <path d="M4.22 4.22l1.42 1.42"></path>
-                    <path d="M18.36 18.36l1.42 1.42"></path>
-                    <path d="M1 12h2"></path>
-                    <path d="M21 12h2"></path>
-                    <path d="M4.22 19.78l1.42-1.42"></path>
-                    <path d="M18.36 5.64l1.42-1.42"></path>
-                </svg>
-            </button>
-        </header>
+    <!-- EDUCATION PAGE -->
+    <div id="page-education" class="page">
+      <div class="card">
+        <h2><i class="fas fa-graduation-cap"></i> Education</h2>
+        <div class="edu-item"><strong>Secondary (10th)</strong> – Belgharia High School | 77.57%</div>
+        <div class="edu-item"><strong>Higher Secondary (12th)</strong> – Udaypur Haradayal Nag Adarsha Vidyalaya | 70%</div>
+        <div class="edu-item"><strong>BSc Computer Science</strong> – Dum Dum Motijheel College | CGPA: 9.56 (2022-2025)</div>
+        <div class="edu-item"><strong>MSc Computer Science</strong> – West Bengal State University | CGPA: XX (2025-2027) <span style="opacity:0.7;">(Pursuing)</span></div>
+      </div>
+    </div>
 
-        <div class="links">
-            <a href="https://youtube.com/@arikmukherjee" target="_blank" class="link-card">
-                <div class="link-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
-                        <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
-                    </svg>
-                </div>
-                <div class="link-content">
-                    <div class="link-title">YouTube Channel</div>
-                    <div class="link-desc">Tutorials & creative content</div>
-                </div>
-            </a>
+    <!-- EXPERIENCE PAGE -->
+    <div id="page-experience" class="page">
+      <div class="card">
+        <h2><i class="fas fa-briefcase"></i> Work Experience</h2>
+        <div class="exp-item"><strong>Anwesha Academy</strong> – Data Analytics & GenAI Internship (2025)<br><a href="#" class="btn cert-btn" data-cert="anwesha">View Certificate</a></div>
+        <div class="exp-item"><strong>IDEAS Technology Innovation Hub @ ISI Kolkata</strong> – Data Science Summer Internship (2026)<br><a href="#" class="btn cert-btn" data-cert="isi">View Certificate</a></div>
+      </div>
+    </div>
 
-            <a href="https://github.com/arikmukherjee" target="_blank" class="link-card">
-                <div class="link-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                    </svg>
-                </div>
-                <div class="link-content">
-                    <div class="link-title">GitHub</div>
-                    <div class="link-desc">My open-source projects</div>
-                </div>
-            </a>
+    <!-- PROJECTS PAGE -->
+    <div id="page-projects" class="page">
+      <div class="card">
+        <h2><i class="fas fa-code"></i> Projects</h2>
+        <div class="project-item"><strong>Diabetes Prediction Model</strong> – Ensemble learning & XAI.<br><a href="#" class="btn project-link">Project Link</a><a href="#" class="btn btn-outline project-report">Report</a></div>
+        <div class="project-item"><strong>Eudify - E-Learning Website</strong> – Full-stack platform.<br><a href="#" class="btn project-link">Project Link</a><a href="#" class="btn btn-outline project-report">Report</a></div>
+        <div class="project-item"><strong>Heart Disease Analysis Model</strong> – Predictive analytics.<br><a href="#" class="btn project-link">Project Link</a><a href="#" class="btn btn-outline project-report">Report</a></div>
+      </div>
+    </div>
 
-            <a href="https://twitter.com/ArikMukherjee6" target="_blank" class="link-card">
-                <div class="link-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                    </svg>
-                </div>
-                <div class="link-content">
-                    <div class="link-title">Twitter</div>
-                    <div class="link-desc">Thoughts & daily updates</div>
-                </div>
-            </a>
-
-            <a href="https://linkedin.com/arik-mukherjee" target="_blank" class="link-card">
-                <div class="link-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                        <rect x="2" y="9" width="4" height="12"></rect>
-                        <circle cx="4" cy="4" r="2"></circle>
-                    </svg>
-                </div>
-                <div class="link-content">
-                    <div class="link-title">LinkedIn</div>
-                    <div class="link-desc">Professional network</div>
-                </div>
-            </a>
-
-            <a href="mailto:arikmukherjee3@gmail.com" class="link-card">
-                <div class="link-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                        <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                </div>
-                <div class="link-content">
-                    <div class="link-title">Contact Me</div>
-                    <div class="link-desc">Let's create something awesome</div>
-                </div>
-            </a>
+    <!-- SKILLS PAGE -->
+    <div id="page-skills" class="page">
+      <div class="card">
+        <h2><i class="fas fa-chart-line"></i> Technical Skills</h2>
+        <div class="skills-badge">
+          <span class="badge">Python</span><span class="badge">JavaScript</span><span class="badge">C++</span><span class="badge">Data Science</span>
+          <span class="badge">Machine Learning</span><span class="badge">HTML/CSS</span><span class="badge">PHP</span><span class="badge">GenAI</span>
         </div>
-
-        <footer>
-            <div class="social-links">
-                <a href="https://facebook.com/arikmukherjee.cs" target="_blank" class="social-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                    </svg>
-                </a>
-                <a href="https://instagram.com/arikmukherjee3" target="_blank" class="social-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                    </svg>
-                </a>
-                <a href="https://twitter.com/ArikMukherjee6" target="_blank" class="social-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                    </svg>
-                </a>
-                <a href="https://linkedin.com/arik-mukherjee" target="_blank" class="social-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                        <rect x="2" y="9" width="4" height="12"></rect>
-                        <circle cx="4" cy="4" r="2"></circle>
-                    </svg>
-                </a>
-                <a href="https://github.com/arikmukherjee" target="_blank" class="social-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                    </svg>
-                </a>
-            </div>
-            <p>© 2025 Arik Mukherjee | All Rights Reserved</p>
-        </footer>
+        <div class="charts-row">
+          <div class="chart-box"><h3>📊 Bar Chart</h3><canvas id="barChart"></canvas></div>
+          <div class="chart-box"><h3>🥧 Pie Chart</h3><canvas id="pieChart"></canvas></div>
+        </div>
+      </div>
     </div>
 
-    <script>
-        // Theme toggle functionality
-        const themeToggle = document.getElementById('themeToggle');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const currentTheme = localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light');
-        
-        // Set initial theme
-        if (currentTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
-        
-        // Toggle theme with animation
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-            localStorage.setItem('theme', theme);
-            
-            // Add toggle animation
-            themeToggle.style.transform = 'rotate(180deg)';
-            setTimeout(() => {
-                themeToggle.style.transform = 'rotate(0)';
-            }, 300);
-        });
+    <!-- E-BOOKS PAGE -->
+    <div id="page-ebooks" class="page">
+      <div class="card">
+        <h2><i class="fas fa-book"></i> E-Books</h2>
+        <div style="padding:1rem; background:var(--badge-bg); border-radius:16px;">
+          <strong>📘 Intent-Driven Development</strong>
+          <p style="margin:8px 0">Modern software design for GenAI era.</p>
+          <a href="#" id="ebookBtn" class="btn">Read E-Book</a>
+        </div>
+      </div>
+    </div>
 
-        // Add ripple effect to link cards
-        document.querySelectorAll('.link-card').forEach(link => {
-            link.addEventListener('click', function(e) {
-                // Remove any existing ripples
-                const existingRipples = this.querySelectorAll('.ripple');
-                existingRipples.forEach(ripple => ripple.remove());
-                
-                // Create ripple
-                const ripple = document.createElement('span');
-                ripple.className = 'ripple';
-                this.appendChild(ripple);
-                
-                // Position ripple
-                const rect = this.getBoundingClientRect();
-                const size = Math.max(rect.width, rect.height);
-                ripple.style.width = ripple.style.height = `${size}px`;
-                ripple.style.left = `${e.clientX - rect.left - size/2}px`;
-                ripple.style.top = `${e.clientY - rect.top - size/2}px`;
-                
-                // Remove ripple after animation
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
-            });
-        });
+    <!-- RESEARCH PAGE -->
+    <div id="page-research" class="page">
+      <div class="card">
+        Temporarily hiding research section until I have more content to share. Will be back soon!
+        <!-- <h2><i class="fas fa-flask"></i> Research Papers</h2>
+        <div class="exp-item"><strong>Ensemble Learning for Diabetes Detection</strong> – NCST 2025.<br><a href="#" id="researchBtn1" class="btn btn-outline">Download Preprint</a></div>
+        <div class="exp-item"><strong>Heart Disease Feature Engineering</strong> – Under Review.<br><a href="#" id="researchBtn2" class="btn btn-outline">Extended Abstract</a></div> -->
+      </div>
+    </div>
 
-        // Style for ripple effect
-        const style = document.createElement('style');
-        style.textContent = `
-            .ripple {
-                position: absolute;
-                border-radius: 50%;
-                background: rgba(255, 255, 255, 0.4);
-                transform: scale(0);
-                animation: ripple 600ms linear;
-                pointer-events: none;
-            }
-            
-            .dark-mode .ripple {
-                background: rgba(0, 0, 0, 0.2);
-            }
-            
-            @keyframes ripple {
-                to {
-                    transform: scale(4);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
+    <!-- QUOTES PAGE -->
+    <div id="page-quotes" class="page">
+      <div class="card">
+        <h2><i class="fas fa-heart"></i> Great Quotes</h2>
+        <div class="quote"><p id="quotePageText">“Stay hungry, stay foolish.” – Steve Jobs</p></div>
+        <button id="refreshQuoteBtn" class="btn" style="margin-top:12px;">New Quote</button>
+      </div>
+    </div>
+
+    <!-- CONTACT PAGE -->
+    <div id="page-contact" class="page">
+      <div class="card">
+        <h2><i class="fas fa-envelope"></i> Get In Touch</h2>
+        <div class="social-icons">
+          <a href="https://github.com/arikmukherjee" target="_blank" class="social-icon"><i class="fab fa-github"></i></a>
+          <a href="https://www.linkedin.com/in/arik-mukherjee/" target="_blank" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+          <a href="https://x.com/ArikMukherjee6" target="_blank" class="social-icon"><i class="fab fa-twitter"></i></a>
+          <a href="mailto:arikmukherjee2022@gmail.com" class="social-icon"><i class="fas fa-envelope"></i></a>
+        </div>
+      </div>
+      <div class="contact-form-card">
+        <h3 style="margin-bottom: 1.5rem; color: var(--accent);"><i class="fas fa-paper-plane"></i> Send a Message</h3>
+        <form id="contactForm">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="contactName" placeholder="John Doe" required>
+          </div>
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" id="contactEmail" placeholder="hello@example.com" required>
+          </div>
+          <div class="form-group">
+            <label>Subject</label>
+            <input type="text" id="contactSubject" placeholder="Collaboration / Opportunity / Question">
+          </div>
+          <div class="form-group">
+            <label>Message *</label>
+            <textarea id="contactMsg" placeholder="Tell me about your project or inquiry..."></textarea>
+          </div>
+          <button type="submit" class="submit-btn"><i class="fas fa-share"></i> Send Message</button>
+          <div id="formFeedback" class="form-feedback"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>© 2025 Arik Mukherjee | Web Developer | All Rights Reserved</footer>
+<script src="script.js"></script>
 </body>
 </html>
