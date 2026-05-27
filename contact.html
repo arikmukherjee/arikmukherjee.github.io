@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Arik Mukherjee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  .contact-layout {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: start;
+  }
+
+  /* LEFT SIDE */
+  .contact-left { }
+  .contact-intro {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-style: italic;
+    line-height: 1.8; color: rgba(240,237,230,0.7);
+    margin-bottom: 3rem;
+    padding: 1.5rem; border-left: 2px solid var(--accent);
+    background: rgba(232,201,126,0.03);
+  }
+
+  /* Contact cards */
+  .contact-cards { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
+  .contact-card {
+    background: var(--bg); padding: 1.6rem 2rem;
+    display: flex; align-items: center; gap: 1.5rem;
+    text-decoration: none; color: var(--text);
+    transition: all 0.3s;
+  }
+  .contact-card:hover { background: rgba(232,201,126,0.04); }
+  .contact-card:hover .cc-arrow { transform: translateX(4px); }
+
+  .cc-icon {
+    width: 48px; height: 48px; border-radius: 2px;
+    background: var(--bg2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0; transition: all 0.3s;
+  }
+  .contact-card:hover .cc-icon { border-color: var(--accent); background: rgba(232,201,126,0.08); }
+
+  .cc-body { flex: 1; min-width: 0; }
+  .cc-platform { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.2rem; }
+  .cc-handle { font-size: 0.82rem; color: var(--text); word-break: break-all; }
+  .contact-card:hover .cc-handle { color: var(--accent); }
+
+  .cc-arrow { font-size: 0.9rem; color: var(--muted); transition: transform 0.3s; }
+
+  /* RIGHT SIDE — Contact Form */
+  .contact-form-wrap {
+    border: 1px solid var(--border); border-radius: 2px;
+    padding: 2.5rem; background: var(--bg2);
+    position: sticky; top: 6rem;
+  }
+  .form-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.3rem; }
+  .form-subtitle { font-size: 0.72rem; color: var(--muted); margin-bottom: 2rem; line-height: 1.6; }
+
+  .form-group { margin-bottom: 1.4rem; }
+  .form-label { display: block; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+  .form-input, .form-textarea {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 2px; padding: 0.75rem 1rem;
+    font-family: 'DM Mono', monospace; font-size: 0.78rem;
+    color: var(--text); transition: border-color 0.3s, box-shadow 0.3s;
+    outline: none; resize: none;
+  }
+  .form-input:focus, .form-textarea:focus {
+    border-color: rgba(232,201,126,0.5);
+    box-shadow: 0 0 0 3px rgba(232,201,126,0.08);
+  }
+  .form-input::placeholder, .form-textarea::placeholder { color: var(--muted); }
+  .form-textarea { min-height: 120px; line-height: 1.6; }
+  .form-btn {
+    width: 100%; padding: 0.9rem 2rem;
+    background: var(--accent); color: var(--bg);
+    border: none; border-radius: 2px;
+    font-family: 'DM Mono', monospace; font-size: 0.72rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; transition: all 0.3s;
+  }
+  .form-btn:hover { background: #f0d890; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(232,201,126,0.25); }
+  .form-btn:active { transform: translateY(0); }
+  .form-note { font-size: 0.62rem; color: var(--muted); text-align: center; margin-top: 0.8rem; line-height: 1.5; }
+
+  /* Success message */
+  .form-success {
+    display: none; text-align: center; padding: 2rem;
+    border: 1px solid rgba(126,184,232,0.3); border-radius: 2px;
+    background: rgba(126,184,232,0.05);
+  }
+  .form-success.visible { display: block; }
+  .success-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .success-text { font-size: 0.82rem; color: var(--accent2); line-height: 1.7; }
+
+  /* Resume section */
+  .resume-section {
+    margin-top: 4rem; padding: 3rem;
+    border: 1px solid var(--border); border-radius: 2px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 2rem; background: var(--bg2); flex-wrap: wrap;
+  }
+  .resume-left .label { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; }
+  .resume-left .title { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; }
+  .resume-left .desc { font-size: 0.73rem; color: var(--muted); line-height: 1.7; margin-top: 0.4rem; }
+  .resume-btn {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 1rem 2.5rem;
+    background: var(--accent); color: var(--bg);
+    border-radius: 2px; text-decoration: none;
+    font-family: 'DM Mono', monospace; font-size: 0.72rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    transition: all 0.3s; white-space: nowrap;
+  }
+  .resume-btn:hover { background: #f0d890; transform: translateY(-2px); box-shadow: 0 10px 30px rgba(232,201,126,0.3); }
+
+  @media(max-width:900px) {
+    .contact-layout { grid-template-columns: 1fr; }
+    .contact-form-wrap { position: static; }
+    .resume-section { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">AM.</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="summary.html">Summary</a></li>
+    <li><a href="education.html">Education</a></li>
+    <li><a href="experience.html">Experience</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="skills.html">Skills</a></li>
+    <li><a href="publications.html">Research</a></li>
+    <li><a href="contact.html" class="active">Contact</a></li>
+  </ul>
+  <button class="menu-btn" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+</nav>
+
+<div class="page-hero">
+  <p class="page-tag">Let's Connect</p>
+  <h1 class="page-h1">Get in <span>Touch</span></h1>
+  <p class="page-lead">Whether it's a collaboration, opportunity, or just a conversation about data science — I'm always open to connecting.</p>
+</div>
+
+<div class="content">
+  <a href="index.html" class="back-link">← Back to Home</a>
+
+  <div class="contact-layout">
+
+    <!-- LEFT: Contact links -->
+    <div class="contact-left">
+      <div class="contact-intro">
+        I'm currently open to data science projects, internship opportunities, and interesting conversations around Data Science, AI, and technology. Feel free to reach out through any of the channels below.
+      </div>
+
+      <div class="block-label">Find Me On</div>
+      <div class="contact-cards">
+        <a href="https://github.com/arikmukherjee" target="_blank" class="contact-card">
+          <div class="cc-icon">⌥</div>
+          <div class="cc-body">
+            <div class="cc-platform">GitHub</div>
+            <div class="cc-handle">github.com/arikmukherjee</div>
+          </div>
+          <span class="cc-arrow">→</span>
+        </a>
+        <a href="https://www.linkedin.com/in/arikmukherjee/" target="_blank" class="contact-card">
+          <div class="cc-icon" style="font-size:0.9rem;font-weight:700;color:var(--accent2);">in</div>
+          <div class="cc-body">
+            <div class="cc-platform">LinkedIn</div>
+            <div class="cc-handle">linkedin.com/in/arikmukherjee</div>
+          </div>
+          <span class="cc-arrow">→</span>
+        </a>
+        <a href="https://x.com/ArikMukherjee6" target="_blank" class="contact-card">
+          <div class="cc-icon" style="font-size:1rem;font-weight:700;">✕</div>
+          <div class="cc-body">
+            <div class="cc-platform">X (Twitter)</div>
+            <div class="cc-handle">@ArikMukherjee6</div>
+          </div>
+          <span class="cc-arrow">→</span>
+        </a>
+        <a href="mailto:arikmukherjee2022@gmail.com" class="contact-card">
+          <div class="cc-icon">@</div>
+          <div class="cc-body">
+            <div class="cc-platform">Email</div>
+            <div class="cc-handle">arikmukherjee2022@gmail.com</div>
+          </div>
+          <span class="cc-arrow">→</span>
+        </a>
+      </div>
+
+      <div style="margin-top:2.5rem;padding:1.5rem;border:1px solid var(--border);border-radius:2px;background:var(--bg2);">
+        <div class="block-label" style="margin-bottom:1rem;">Response Time</div>
+        <div style="font-size:0.78rem;color:rgba(240,237,230,0.6);line-height:1.8;">
+          I typically respond to emails and LinkedIn messages within <span style="color:var(--accent);">24–48 hours</span>. For urgent matters, email is the fastest way to reach me.
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Contact form -->
+    <div class="contact-form-wrap">
+      <div class="form-title">Send a Message</div>
+      <div class="form-subtitle">Have a project, opportunity, or question? Drop me a message and I'll get back to you.</div>
+
+      <div id="contactForm">
+        <div class="form-group">
+          <label class="form-label" for="name">Your Name</label>
+          <input class="form-input" type="text" id="name" placeholder="e.g. John Doe">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <input class="form-input" type="email" id="email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="subject">Subject</label>
+          <input class="form-input" type="text" id="subject" placeholder="e.g. Collaboration Opportunity">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="message">Message</label>
+          <textarea class="form-textarea" id="message" placeholder="Hi Arik, I wanted to reach out about..."></textarea>
+        </div>
+        <button class="form-btn" onclick="handleSubmit()">Send Message →</button>
+        <p class="form-note">This form opens your email client with the message pre-filled.</p>
+      </div>
+
+      <div class="form-success" id="successMsg">
+        <div class="success-icon">✉️</div>
+        <div class="success-text">Your email client should have opened with the message pre-filled. If not, please email directly at arikmukherjee2022@gmail.com</div>
+        <button onclick="resetForm()" style="margin-top:1.2rem;background:none;border:1px solid var(--border);color:var(--muted);padding:0.5rem 1.2rem;border-radius:2px;cursor:pointer;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;">Send Another</button>
+      </div>
+    </div>
+
+  </div><!-- /contact-layout -->
+
+  <!-- RESUME DOWNLOAD -->
+  <div class="resume-section">
+    <div class="resume-left">
+      <div class="label">Download</div>
+      <div class="title">My Resume / CV</div>
+      <div class="desc">A complete overview of my education, experience, projects, and skills — ready to download as PDF.</div>
+    </div>
+    <a href="https://drive.google.com/open?id=1UHVugklV-_K7LTNLpMolSO-RqB8m6d4o&usp=drive_copy" download="Arik_Mukherjee_Resume.pdf" class="resume-btn">↓ Download Resume (PDF)</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-brand">Arik Mukherjee</div>
+  <div class="footer-links">
+    <a href="https://github.com/arikmukherjee" target="_blank">GitHub</a>
+    <a href="https://www.linkedin.com/in/arikmukherjee/" target="_blank">LinkedIn</a>
+    <a href="https://x.com/ArikMukherjee6" target="_blank">X</a>
+    <a href="mailto:arikmukherjee2022@gmail.com">Email</a>
+  </div>
+  <div class="footer-copy">© 2025 Arik Mukherjee</div>
+</footer>
+
+<script>
+function handleSubmit() {
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const subject = document.getElementById('subject').value.trim() || 'Message from Portfolio';
+  const message = document.getElementById('message').value.trim();
+
+  if (!name || !email || !message) {
+    alert('Please fill in your name, email, and message.');
+    return;
+  }
+
+  const body = `Hi Arik,\n\n${message}\n\nBest regards,\n${name}\n${email}`;
+  const mailtoLink = `mailto:arikmukherjee2022@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailtoLink;
+
+  document.getElementById('contactForm').style.display = 'none';
+  document.getElementById('successMsg').classList.add('visible');
+}
+
+function resetForm() {
+  document.getElementById('contactForm').style.display = 'block';
+  document.getElementById('successMsg').classList.remove('visible');
+  ['name','email','subject','message'].forEach(id => document.getElementById(id).value = '');
+}
+</script>
+</body>
+</html>

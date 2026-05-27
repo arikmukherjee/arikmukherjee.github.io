@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research & Publications — Arik Mukherjee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* Section separator */
+  .pub-section { margin-bottom: 5rem; }
+  .pub-section-header {
+    display: flex; align-items: center; gap: 1.5rem;
+    margin-bottom: 2.5rem; padding-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .pub-section-icon { font-size: 1.8rem; }
+  .pub-section-label { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
+  .pub-section-title { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; margin-top: 0.2rem; }
+  .pub-count {
+    margin-left: auto; font-family: 'Syne', sans-serif;
+    font-size: 2rem; font-weight: 800; color: rgba(232,201,126,0.15);
+  }
+
+  /* RESEARCH PAPER CARD */
+  .paper-card {
+    border: 1px solid var(--border); border-radius: 2px;
+    padding: 2.5rem; margin-bottom: 1.5rem;
+    position: relative; overflow: hidden; transition: all 0.3s;
+  }
+  .paper-card:hover { border-color: rgba(232,201,126,0.4); background: rgba(232,201,126,0.02); }
+  .paper-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0; transition: opacity 0.4s; }
+  .paper-card:hover::before { opacity: 1; }
+
+  .paper-badge { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.22rem 0.7rem; border: 1px solid rgba(126,184,232,0.3); border-radius: 2px; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent2); margin-bottom: 1rem; }
+  .paper-title { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; line-height: 1.4; margin-bottom: 0.5rem; }
+  .paper-authors { font-size: 0.7rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .paper-venue { font-size: 0.7rem; color: var(--accent2); margin-bottom: 1rem; font-style: italic; }
+  .paper-abstract { font-size: 0.77rem; line-height: 1.85; color: rgba(240,237,230,0.6); margin-bottom: 1.5rem; }
+  .paper-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+  .paper-tag { padding: 0.2rem 0.65rem; border: 1px solid var(--border); border-radius: 2px; font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* EMPTY STATE for research papers */
+  .empty-state {
+    border: 1px dashed rgba(232,201,126,0.2); border-radius: 2px;
+    padding: 4rem 2rem; text-align: center;
+  }
+  .empty-icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.5; }
+  .empty-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--muted); margin-bottom: 0.5rem; }
+  .empty-desc { font-size: 0.72rem; color: rgba(122,122,138,0.7); line-height: 1.7; max-width: 400px; margin: 0 auto; }
+
+  /* EBOOK CARD */
+  .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+  .book-card {
+    border: 1px solid var(--border); border-radius: 2px;
+    overflow: hidden; transition: all 0.3s;
+    display: flex; flex-direction: column;
+  }
+  .book-card:hover { border-color: rgba(232,201,126,0.4); transform: translateY(-3px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+
+  .book-cover {
+    aspect-ratio: 3/2;
+    background: linear-gradient(135deg, #1a1030 0%, #2d1b69 50%, #1a0a2e 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 2rem; position: relative; overflow: hidden;
+    text-align: center;
+  }
+  .book-cover::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 30% 70%, rgba(232,201,126,0.15) 0%, transparent 60%);
+  }
+  .book-cover-icon { font-size: 2.5rem; margin-bottom: 0.8rem; position: relative; z-index: 1; }
+  .book-cover-title {
+    font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700;
+    line-height: 1.4; color: var(--text); position: relative; z-index: 1;
+  }
+  .book-cover-sub { font-size: 0.6rem; color: var(--muted); margin-top: 0.5rem; position: relative; z-index: 1; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .book-body { padding: 1.8rem; flex: 1; display: flex; flex-direction: column; gap: 0.8rem; }
+  .book-label { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); }
+  .book-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; line-height: 1.3; }
+  .book-desc { font-size: 0.73rem; color: rgba(240,237,230,0.6); line-height: 1.8; flex: 1; }
+  .book-meta { font-size: 0.65rem; color: var(--muted); }
+  .book-footer { padding: 0 1.8rem 1.8rem; }
+
+  /* HIGHLIGHT ROW */
+  .pub-highlights {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 0; border: 1px solid var(--border); border-radius: 2px;
+    overflow: hidden; margin-top: 5rem;
+  }
+  .ph-cell { padding: 2rem; border-right: 1px solid var(--border); text-align: center; }
+  .ph-cell:last-child { border-right: none; }
+  .ph-num { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; color: var(--accent); }
+  .ph-label { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.3rem; }
+
+  @media(max-width:700px) {
+    .books-grid { grid-template-columns: 1fr; }
+    .pub-highlights { grid-template-columns: 1fr; }
+    .ph-cell { border-right: none; border-bottom: 1px solid var(--border); }
+    .ph-cell:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">AM.</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="summary.html">Summary</a></li>
+    <li><a href="education.html">Education</a></li>
+    <li><a href="experience.html">Experience</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="skills.html">Skills</a></li>
+    <li><a href="publications.html" class="active">Research</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <button class="menu-btn" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+</nav>
+
+<div class="page-hero">
+  <p class="page-tag">Knowledge & Authorship</p>
+  <h1 class="page-h1">Research &amp; <span>Publications</span></h1>
+  <p class="page-lead">Research papers, e-books, and academic contributions exploring the frontiers of computer science and data.</p>
+</div>
+
+<div class="content">
+  <a href="index.html" class="back-link">← Back to Home</a>
+
+  <!-- RESEARCH PAPERS -->
+  <div class="pub-section">
+    <div class="pub-section-header">
+      <div class="pub-section-icon">📄</div>
+      <div>
+        <div class="pub-section-label">Academic</div>
+        <div class="pub-section-title">Research Papers</div>
+      </div>
+      <div class="pub-count">01</div>
+    </div>
+
+    <!-- Placeholder / upcoming -->
+    <div class="empty-state">
+      <div class="empty-icon">🔬</div>
+      <div class="empty-title">Research in Progress</div>
+      <div class="empty-desc">Currently working on research in the fields of Machine Learning and Data Science as part of my MSc program at West Bengal State University. Papers will be published here upon completion and peer review.</div>
+      <div style="margin-top:1.5rem;">
+        <span class="paper-badge">Upcoming · 2026</span>
+      </div>
+    </div>
+
+    <!-- Sample / Placeholder research paper structure -->
+    <div class="paper-card" style="margin-top:1.5rem;">
+      <span class="paper-badge">Preprint · Add your paper here</span>
+      <div class="paper-title">[ Your Research Paper Title ]</div>
+      <div class="paper-authors">Arik Mukherjee, et al.</div>
+      <div class="paper-venue">[ Journal / Conference Name ] · [ Year ]</div>
+      <div class="paper-abstract">Add your research paper abstract here. Describe the problem, your methodology, key findings, and the significance of your work in 2–4 sentences.</div>
+      <div class="paper-tags">
+        <span class="paper-tag">Machine Learning</span>
+        <span class="paper-tag">Data Science</span>
+        <span class="paper-tag">Replace Tags</span>
+      </div>
+      <div style="display:flex;gap:0.7rem;flex-wrap:wrap;">
+        <a href="#" class="link-btn primary">📄 Read Paper</a>
+        <a href="#" class="link-btn">🔗 DOI Link</a>
+        <a href="#" class="link-btn">⌥ Code Repository</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- E-BOOKS -->
+  <div class="pub-section">
+    <div class="pub-section-header">
+      <div class="pub-section-icon">📚</div>
+      <div>
+        <div class="pub-section-label">Authored</div>
+        <div class="pub-section-title">E-Books</div>
+      </div>
+      <div class="pub-count">01</div>
+    </div>
+
+    <div class="books-grid">
+      <!-- Intent-Driven Development -->
+      <div class="book-card">
+        <div class="book-cover">
+          <div class="book-cover-icon">🧭</div>
+          <div class="book-cover-title">Intent-Driven Development</div>
+          <div class="book-cover-sub">by Arik Mukherjee</div>
+        </div>
+        <div class="book-body">
+          <div class="book-label">E-Book · Software Philosophy</div>
+          <div class="book-title">Intent-Driven Development</div>
+          <div class="book-desc">A conceptual guide exploring a development philosophy where the intent behind code — the <em>why</em> — drives architecture, design, and implementation decisions. This book bridges the gap between technical craftsmanship and purposeful software engineering.</div>
+          <div class="book-meta">Author: Arik Mukherjee · Digital Edition</div>
+        </div>
+        <div class="book-footer">
+          <a href="#" class="link-btn primary" style="display:flex;justify-content:center;width:100%;margin-top:0;">📖 Read / Download</a>
+        </div>
+      </div>
+
+      <!-- Placeholder for next book -->
+      <div class="book-card" style="border-style:dashed;opacity:0.5;">
+        <div class="book-cover" style="background:linear-gradient(135deg,#0a0a0f,#0f0f1a);">
+          <div class="book-cover-icon">✏️</div>
+          <div class="book-cover-title" style="color:var(--muted);">Next Book Coming Soon</div>
+          <div class="book-cover-sub">Work in Progress</div>
+        </div>
+        <div class="book-body">
+          <div class="book-label">Upcoming</div>
+          <div class="book-title">[ Next Publication ]</div>
+          <div class="book-desc">More writing in progress. Stay tuned for upcoming e-books and guides on Data Science, Machine Learning, and beyond.</div>
+        </div>
+        <div class="book-footer">
+          <div class="link-btn" style="display:flex;justify-content:center;cursor:default;">Coming Soon</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIGHLIGHTS -->
+  <div class="pub-highlights">
+    <div class="ph-cell">
+      <div class="ph-num">1</div>
+      <div class="ph-label">E-Book Published</div>
+    </div>
+    <div class="ph-cell">
+      <div class="ph-num">MSc</div>
+      <div class="ph-label">Research Ongoing</div>
+    </div>
+    <div class="ph-cell">
+      <div class="ph-num">∞</div>
+      <div class="ph-label">Curiosity Driven</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-brand">Arik Mukherjee</div>
+  <div class="footer-links">
+    <a href="https://github.com/arikmukherjee" target="_blank">GitHub</a>
+    <a href="https://www.linkedin.com/in/arikmukherjee/" target="_blank">LinkedIn</a>
+    <a href="mailto:arikmukherjee2022@gmail.com">Email</a>
+  </div>
+  <div class="footer-copy">© 2025 Arik Mukherjee</div>
+</footer>
+</body>
+</html>

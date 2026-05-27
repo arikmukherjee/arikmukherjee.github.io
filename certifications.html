@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certifications — Arik Mukherjee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex; gap: 0.6rem; flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+  .filter-btn {
+    padding: 0.45rem 1.1rem;
+    border: 1px solid var(--border); border-radius: 20px;
+    background: none; color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; transition: all 0.25s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(232,201,126,0.08); }
+
+  /* CERT COUNT BADGE */
+  .filter-btn .count {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: rgba(232,201,126,0.12); font-size: 0.58rem;
+    margin-left: 0.4rem; color: var(--accent);
+  }
+  .filter-btn.active .count { background: rgba(232,201,126,0.25); }
+
+  /* CERTS GRID */
+  .certs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 1.5rem;
+  }
+
+  /* CERT CARD */
+  .cert-card {
+    border: 1px solid var(--border); border-radius: 2px;
+    background: var(--bg2);
+    display: flex; flex-direction: column;
+    transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .cert-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: var(--card-accent, linear-gradient(90deg, var(--accent), var(--accent2)));
+    transform: scaleX(0); transform-origin: left; transition: transform 0.4s;
+  }
+  .cert-card:hover { border-color: rgba(232,201,126,0.35); transform: translateY(-3px); box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
+  .cert-card:hover::before { transform: scaleX(1); }
+
+  /* CARD TOP BAND */
+  .cert-band {
+    padding: 1.4rem 1.6rem 1rem;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .cert-issuer-row { display: flex; align-items: center; gap: 0.8rem; }
+  .cert-logo {
+    width: 36px; height: 36px; border-radius: 4px;
+    background: var(--logo-bg, rgba(232,201,126,0.1));
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0;
+  }
+  .cert-issuer-name { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.06em; }
+  .cert-platform-tag {
+    font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.2rem 0.6rem; border-radius: 20px; border: 1px solid var(--tag-border, rgba(232,201,126,0.25));
+    color: var(--tag-color, var(--accent)); white-space: nowrap; flex-shrink: 0;
+  }
+
+  /* CARD BODY */
+  .cert-body { padding: 1rem 1.6rem 1.4rem; flex: 1; display: flex; flex-direction: column; gap: 0.6rem; }
+  .cert-title {
+    font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700;
+    line-height: 1.35; color: var(--text);
+  }
+  .cert-domain {
+    font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--domain-color, var(--accent)); display: flex; align-items: center; gap: 0.4rem;
+  }
+  .cert-domain::before { content: ''; width: 12px; height: 1px; background: currentColor; }
+
+  /* CARD FOOTER */
+  .cert-footer {
+    padding: 0.8rem 1.6rem 1.2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+  .cert-link {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase;
+    text-decoration: none; color: var(--muted); transition: color 0.3s;
+  }
+  .cert-link:hover { color: var(--accent); }
+  .cert-verified {
+    display: flex; align-items: center; gap: 0.35rem;
+    font-size: 0.58rem; color: rgba(126,184,232,0.6); letter-spacing: 0.08em;
+  }
+
+  /* PLATFORM COLOUR THEMES */
+  .theme-forage    { --card-accent: linear-gradient(90deg,#6c63ff,#9c94ff); --logo-bg:rgba(108,99,255,0.12); --tag-border:rgba(108,99,255,0.3); --tag-color:#9c94ff; --domain-color:#9c94ff; }
+  .theme-ibm       { --card-accent: linear-gradient(90deg,#1f70c1,#5ba3f5); --logo-bg:rgba(31,112,193,0.12); --tag-border:rgba(31,112,193,0.3); --tag-color:#5ba3f5; --domain-color:#5ba3f5; }
+  .theme-google    { --card-accent: linear-gradient(90deg,#34a853,#fbbc05); --logo-bg:rgba(52,168,83,0.12); --tag-border:rgba(52,168,83,0.3); --tag-color:#34a853; --domain-color:#34a853; }
+  .theme-hackerrank{ --card-accent: linear-gradient(90deg,#2ec866,#1ba94c); --logo-bg:rgba(46,200,102,0.12); --tag-border:rgba(46,200,102,0.3); --tag-color:#2ec866; --domain-color:#2ec866; }
+  .theme-simplilearn{ --card-accent: linear-gradient(90deg,#f97316,#fb923c); --logo-bg:rgba(249,115,22,0.12); --tag-border:rgba(249,115,22,0.3); --tag-color:#fb923c; --domain-color:#fb923c; }
+  .theme-jpmorgan  { --card-accent: linear-gradient(90deg,#003f7f,#0066cc); --logo-bg:rgba(0,63,127,0.15); --tag-border:rgba(0,102,204,0.3); --tag-color:#5ba3f5; --domain-color:#5ba3f5; }
+  .theme-upgrad    { --card-accent: linear-gradient(90deg,#e8192c,#ff4d5e); --logo-bg:rgba(232,25,44,0.12); --tag-border:rgba(232,25,44,0.3); --tag-color:#ff4d5e; --domain-color:#ff4d5e; }
+  .theme-greatlearning{ --card-accent: linear-gradient(90deg,#e85d04,#f48c06); --logo-bg:rgba(232,93,4,0.12); --tag-border:rgba(232,93,4,0.3); --tag-color:#f48c06; --domain-color:#f48c06; }
+  .theme-skillected{ --card-accent: linear-gradient(90deg,var(--accent),#f0d890); --logo-bg:rgba(232,201,126,0.12); --tag-border:rgba(232,201,126,0.3); --tag-color:var(--accent); --domain-color:var(--accent); }
+
+  /* HIDDEN for filter */
+  .cert-card.hidden { display: none; }
+
+  /* SUMMARY BANNER */
+  .cert-summary {
+    display: grid; grid-template-columns: repeat(5,1fr);
+    gap: 0; border: 1px solid var(--border); border-radius: 2px;
+    overflow: hidden; margin-bottom: 3.5rem;
+  }
+  .cs-cell { padding: 1.5rem; border-right: 1px solid var(--border); text-align: center; }
+  .cs-cell:last-child { border-right: none; }
+  .cs-num { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--accent); }
+  .cs-label { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.25rem; }
+
+  /* Entrance stagger */
+  .cert-card {
+    opacity: 0; transform: translateY(18px);
+    animation: certIn 0.45s ease forwards;
+  }
+  @keyframes certIn { to { opacity:1; transform:translateY(0); } }
+
+  @media(max-width:700px) {
+    .certs-grid { grid-template-columns: 1fr; }
+    .cert-summary { grid-template-columns: repeat(3,1fr); }
+    .cs-cell:nth-child(4), .cs-cell:nth-child(5) { border-top: 1px solid var(--border); }
+    .cs-cell:nth-child(3), .cs-cell:nth-child(5) { border-right: none; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">AM.</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="summary.html">Summary</a></li>
+    <li><a href="education.html">Education</a></li>
+    <li><a href="experience.html">Experience</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="skills.html">Skills</a></li>
+    <li><a href="publications.html">Research</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="seminars.html">Seminars</a></li>
+    <li><a href="certifications.html" class="active">Certifications</a></li>
+  </ul>
+  <button class="menu-btn" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+</nav>
+
+<div class="page-hero">
+  <p class="page-tag">Verified Credentials</p>
+  <h1 class="page-h1">My <span>Certifications</span></h1>
+  <p class="page-lead">20 certifications across Data Science, AI, Software Engineering, Cybersecurity, and Cloud — from the world's leading platforms.</p>
+</div>
+
+<div class="content">
+  <a href="index.html" class="back-link">← Back to Home</a>
+
+  <!-- SUMMARY BANNER -->
+  <div class="cert-summary">
+    <div class="cs-cell"><div class="cs-num">20</div><div class="cs-label">Total Certs</div></div>
+    <div class="cs-cell"><div class="cs-num">5</div><div class="cs-label">Job Simulations</div></div>
+    <div class="cs-cell"><div class="cs-num">9</div><div class="cs-label">Platforms</div></div>
+    <div class="cs-cell"><div class="cs-num">6</div><div class="cs-label">Domains</div></div>
+    <div class="cs-cell"><div class="cs-num">∞</div><div class="cs-label">Learning On</div></div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" onclick="filter('all',this)">All <span class="count">20</span></button>
+    <button class="filter-btn" onclick="filter('forage',this)">Forage <span class="count">6</span></button>
+    <button class="filter-btn" onclick="filter('data',this)">Data Science <span class="count">5</span></button>
+    <button class="filter-btn" onclick="filter('ai',this)">AI / ML <span class="count">4</span></button>
+    <button class="filter-btn" onclick="filter('engineering',this)">Engineering <span class="count">5</span></button>
+    <button class="filter-btn" onclick="filter('security',this)">Security <span class="count">2</span></button>
+    <button class="filter-btn" onclick="filter('cloud',this)">Cloud <span class="count">2</span></button>
+  </div>
+
+  <!-- CERTIFICATIONS GRID -->
+  <div class="certs-grid" id="certsGrid">
+
+    <!-- 1. Java Basic - HackerRank -->
+    <div class="cert-card theme-hackerrank" data-cat="engineering" style="animation-delay:0.05s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🟢</div>
+          <div class="cert-issuer-name">HackerRank</div>
+        </div>
+        <span class="cert-platform-tag">HackerRank</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Programming</div>
+        <div class="cert-title">Java Programming (Basic)</div>
+      </div>
+      <div class="cert-footer">
+        <a href="https://www.hackerrank.com/certificates/f92c781d708c" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 2. Deloitte Data Analytics - Forage -->
+    <div class="cert-card theme-forage" data-cat="forage data" style="animation-delay:0.08s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🟣</div>
+          <div class="cert-issuer-name">Deloitte Australia · Forage</div>
+        </div>
+        <span class="cert-platform-tag">Forage</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Data Analytics · Job Simulation</div>
+        <div class="cert-title">Data Analytics Job Simulation</div>
+      </div>
+      <div class="cert-footer">
+        <a href="https://www.theforage.com/completion-certificates/9PBTqmSxAf6zZTseP/io9DzWKe3PTsiS6GG_9PBTqmSxAf6zZTseP_EmecYW74vxD9NyF8p_1758094746368_completion_certificate.pdf" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 3. Deloitte Technology - Forage -->
+    <div class="cert-card theme-forage" data-cat="forage engineering" style="animation-delay:0.11s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🟣</div>
+          <div class="cert-issuer-name">Deloitte Australia · Forage</div>
+        </div>
+        <span class="cert-platform-tag">Forage</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Technology · Job Simulation</div>
+        <div class="cert-title">Technology Job Simulation</div>
+      </div>
+      <div class="cert-footer">
+        <a href="https://www.theforage.com/completion-certificates/9PBTqmSxAf6zZTseP/udmxiyHeqYQLkTPvf_9PBTqmSxAf6zZTseP_EmecYW74vxD9NyF8p_1758098662483_completion_certificate.pdf" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 4. Embedded System - Simplilearn -->
+    <div class="cert-card theme-simplilearn" data-cat="engineering" style="animation-delay:0.14s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🟠</div>
+          <div class="cert-issuer-name">Simplilearn</div>
+        </div>
+        <span class="cert-platform-tag">Simplilearn</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Embedded Systems</div>
+        <div class="cert-title">Embedded System</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 5. Enterprise Design Thinking - IBM -->
+    <div class="cert-card theme-ibm" data-cat="engineering" style="animation-delay:0.17s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🔵</div>
+          <div class="cert-issuer-name">IBM</div>
+        </div>
+        <span class="cert-platform-tag">IBM</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Design Thinking · Practitioner</div>
+        <div class="cert-title">Enterprise Design Thinking Practitioner</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 6. Intro to Cyber Security - Simplilearn -->
+    <div class="cert-card theme-simplilearn" data-cat="security" style="animation-delay:0.20s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🟠</div>
+          <div class="cert-issuer-name">Simplilearn</div>
+        </div>
+        <span class="cert-platform-tag">Simplilearn</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Cybersecurity</div>
+        <div class="cert-title">Introduction to Cyber Security</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 7. Intro to LLMs - Google -->
+    <div class="cert-card theme-google" data-cat="ai cloud" style="animation-delay:0.23s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🟢</div>
+          <div class="cert-issuer-name">Google Cloud Skill Boost</div>
+        </div>
+        <span class="cert-platform-tag">Google</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">AI · Large Language Models</div>
+        <div class="cert-title">Introduction to Large Language Models</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 8. J.P. Morgan Software Engg - Forage -->
+    <div class="cert-card theme-jpmorgan" data-cat="forage engineering" style="animation-delay:0.26s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🏦</div>
+          <div class="cert-issuer-name">J.P. Morgan · Forage</div>
+        </div>
+        <span class="cert-platform-tag">Forage</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Software Engineering · Job Simulation</div>
+        <div class="cert-title">Software Engineering Job Simulation</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 9. Lloyds Banking - Forage -->
+    <div class="cert-card theme-forage" data-cat="forage engineering" style="animation-delay:0.29s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🟣</div>
+          <div class="cert-issuer-name">Lloyds Banking Group · Forage</div>
+        </div>
+        <span class="cert-platform-tag">Forage</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Technology Engineering · Job Simulation</div>
+        <div class="cert-title">Technology Engineering Job Simulation</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 10. Simplilearn Certified Data Scientist -->
+    <div class="cert-card theme-simplilearn" data-cat="data" style="animation-delay:0.32s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🟠</div>
+          <div class="cert-issuer-name">Simplilearn</div>
+        </div>
+        <span class="cert-platform-tag">Simplilearn</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Data Science · Certification</div>
+        <div class="cert-title">Simplilearn Certified Data Scientist</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 11. Skyscanner - Forage -->
+    <div class="cert-card theme-forage" data-cat="forage engineering" style="animation-delay:0.35s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">✈️</div>
+          <div class="cert-issuer-name">Skyscanner · Forage</div>
+        </div>
+        <span class="cert-platform-tag">Forage</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Software Engineering · Job Simulation</div>
+        <div class="cert-title">Software Engineering Job Simulation</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 12. Tata Cybersecurity - Forage -->
+    <div class="cert-card theme-forage" data-cat="forage security" style="animation-delay:0.38s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🛡️</div>
+          <div class="cert-issuer-name">Tata Group · Forage</div>
+        </div>
+        <span class="cert-platform-tag">Forage</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Cybersecurity · Job Simulation</div>
+        <div class="cert-title">Cybersecurity Analyst Job Simulation</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 13. Tata GenAI Data Analytics - Forage -->
+    <div class="cert-card theme-forage" data-cat="forage data ai" style="animation-delay:0.41s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🤖</div>
+          <div class="cert-issuer-name">Tata Group · Forage</div>
+        </div>
+        <span class="cert-platform-tag">Forage</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">GenAI · Data Analytics · Job Simulation</div>
+        <div class="cert-title">GenAI Powered Data Analytics Job Simulation</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 14. Walmart Advanced SWE - Forage -->
+    <div class="cert-card theme-forage" data-cat="forage engineering" style="animation-delay:0.44s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🛒</div>
+          <div class="cert-issuer-name">Walmart USA · Forage</div>
+        </div>
+        <span class="cert-platform-tag">Forage</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Advanced Software Engineering · Job Simulation</div>
+        <div class="cert-title">Advanced Software Engineering Job Simulation</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 15. Python - Great Learning -->
+    <div class="cert-card theme-greatlearning" data-cat="engineering" style="animation-delay:0.47s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🐍</div>
+          <div class="cert-issuer-name">Great Learning</div>
+        </div>
+        <span class="cert-platform-tag">Great Learning</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Programming</div>
+        <div class="cert-title">Python Programming</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 16. Java - Great Learning -->
+    <div class="cert-card theme-greatlearning" data-cat="engineering" style="animation-delay:0.50s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">☕</div>
+          <div class="cert-issuer-name">Great Learning</div>
+        </div>
+        <span class="cert-platform-tag">Great Learning</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Programming</div>
+        <div class="cert-title">Java Programming</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 17. AI in Real World - upGrad -->
+    <div class="cert-card theme-upgrad" data-cat="ai" style="animation-delay:0.53s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🔴</div>
+          <div class="cert-issuer-name">upGrad</div>
+        </div>
+        <span class="cert-platform-tag">upGrad</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Artificial Intelligence</div>
+        <div class="cert-title">Artificial Intelligence in Real World Experience</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 18. Cloud Computing - upGrad -->
+    <div class="cert-card theme-upgrad" data-cat="cloud" style="animation-delay:0.56s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">☁️</div>
+          <div class="cert-issuer-name">upGrad</div>
+        </div>
+        <span class="cert-platform-tag">upGrad</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Cloud Computing</div>
+        <div class="cert-title">Cloud Computing</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 19. Data Science Methodology - IBM -->
+    <div class="cert-card theme-ibm" data-cat="data" style="animation-delay:0.59s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">🔵</div>
+          <div class="cert-issuer-name">IBM</div>
+        </div>
+        <span class="cert-platform-tag">IBM</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Data Science · Methodology</div>
+        <div class="cert-title">Data Science Methodology</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+    <!-- 20. Machine Learning - Skillected -->
+    <div class="cert-card theme-skillected" data-cat="ai data" style="animation-delay:0.62s">
+      <div class="cert-band">
+        <div class="cert-issuer-row">
+          <div class="cert-logo">⭐</div>
+          <div class="cert-issuer-name">Skillected</div>
+        </div>
+        <span class="cert-platform-tag">Skillected</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-domain">Machine Learning · Certified</div>
+        <div class="cert-title">Skillected Certified Machine Learning</div>
+      </div>
+      <div class="cert-footer">
+        <a href="#" class="cert-link">View Certificate →</a>
+        <span class="cert-verified">✓ Verified</span>
+      </div>
+    </div>
+
+  </div><!-- /certs-grid -->
+</div>
+
+<footer>
+  <div class="footer-brand">Arik Mukherjee</div>
+  <div class="footer-links">
+    <a href="https://github.com/arikmukherjee" target="_blank">GitHub</a>
+    <a href="https://www.linkedin.com/in/arikmukherjee/" target="_blank">LinkedIn</a>
+    <a href="mailto:arikmukherjee2022@gmail.com">Email</a>
+  </div>
+  <div class="footer-copy">© 2025 Arik Mukherjee</div>
+</footer>
+
+<script>
+function filter(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const cards = document.querySelectorAll('.cert-card');
+  let delay = 0.05;
+  cards.forEach(card => {
+    const cats = card.dataset.cat || '';
+    const show = cat === 'all' || cats.split(' ').includes(cat);
+    if (show) {
+      card.classList.remove('hidden');
+      card.style.animationDelay = delay + 's';
+      card.style.animation = 'none';
+      card.offsetHeight; // reflow
+      card.style.animation = `certIn 0.4s ease ${delay}s forwards`;
+      card.style.opacity = '0';
+      delay += 0.04;
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+}
+</script>
+</body>
+</html>

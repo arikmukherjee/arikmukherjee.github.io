@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Experience — Arik Mukherjee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  .exp-grid { display: flex; flex-direction: column; gap: 2.5rem; }
+
+  .exp-card {
+    border: 1px solid var(--border); border-radius: 2px;
+    overflow: hidden; transition: border-color 0.3s;
+    position: relative;
+  }
+  .exp-card:hover { border-color: rgba(232,201,126,0.4); }
+  .exp-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2));
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .exp-card:hover::before { opacity: 1; }
+
+  .exp-header {
+    display: grid; grid-template-columns: auto 1fr auto;
+    gap: 1.5rem; align-items: center;
+    padding: 2rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+  }
+  .exp-logo {
+    width: 56px; height: 56px; border-radius: 2px;
+    background: rgba(232,201,126,0.08); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; flex-shrink: 0;
+  }
+  .exp-org { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; }
+  .exp-role { font-size: 0.75rem; color: var(--accent2); margin-top: 0.25rem; letter-spacing: 0.05em; }
+  .exp-badge {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.35rem 1rem;
+    border: 1px solid rgba(232,201,126,0.3);
+    border-radius: 20px; font-size: 0.62rem; color: var(--accent);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    white-space: nowrap; align-self: flex-start;
+  }
+
+  .exp-body { padding: 2rem 2.5rem; }
+  .exp-meta-row {
+    display: flex; gap: 2.5rem; flex-wrap: wrap;
+    padding-bottom: 1.5rem; margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .exp-meta-item { display: flex; flex-direction: column; gap: 0.2rem; }
+  .exp-meta-label { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+  .exp-meta-value { font-size: 0.78rem; color: var(--text); }
+
+  .exp-desc { font-size: 0.8rem; line-height: 1.9; color: rgba(240,237,230,0.65); margin-bottom: 1.5rem; }
+
+  .exp-tags { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .exp-tag {
+    padding: 0.25rem 0.8rem; border: 1px solid var(--border);
+    border-radius: 2px; font-size: 0.62rem; letter-spacing: 0.08em;
+    color: var(--muted); text-transform: uppercase;
+  }
+
+  .exp-links { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+
+  .cert-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.6rem 1.4rem;
+    border: 1px solid rgba(232,201,126,0.35); border-radius: 2px;
+    font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; color: var(--accent);
+    transition: all 0.3s; background: rgba(232,201,126,0.05);
+  }
+  .cert-link:hover { background: rgba(232,201,126,0.12); }
+  .cert-link .icon { font-size: 0.85rem; }
+
+  /* Timeline connector between cards */
+  .timeline-connector {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--border); font-size: 1.2rem; padding: 0.2rem 0;
+    opacity: 0.5;
+  }
+
+  /* Quote callout */
+  .exp-quote {
+    margin-top: 1.5rem; padding: 1rem 1.5rem;
+    border-left: 2px solid var(--accent);
+    background: rgba(232,201,126,0.04);
+    border-radius: 0 2px 2px 0;
+  }
+  .exp-quote p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.85rem; color: rgba(240,237,230,0.7); line-height: 1.7; }
+
+  .highlight-stat-row {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 0; border: 1px solid var(--border); border-radius: 2px;
+    overflow: hidden; margin-top: 4rem;
+  }
+  .hs-cell {
+    padding: 2rem; border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .hs-cell:nth-child(2n) { border-right: none; }
+  .hs-cell:nth-child(3), .hs-cell:nth-child(4) { border-bottom: none; }
+  .hs-num { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; color: var(--accent); }
+  .hs-label { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.3rem; }
+
+  @media(max-width:700px) {
+    .exp-header { grid-template-columns: auto 1fr; }
+    .exp-badge { grid-column: 1/-1; align-self: auto; }
+    .exp-body { padding: 1.5rem; }
+    .exp-header { padding: 1.5rem; }
+    .highlight-stat-row { grid-template-columns: 1fr; }
+    .hs-cell { border-right: none !important; }
+    .hs-cell:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">AM.</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="summary.html">Summary</a></li>
+    <li><a href="education.html">Education</a></li>
+    <li><a href="experience.html" class="active">Experience</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="skills.html">Skills</a></li>
+    <li><a href="publications.html">Research</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <button class="menu-btn" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+</nav>
+
+<div class="page-hero">
+  <p class="page-tag">Professional Path</p>
+  <h1 class="page-h1">Work <span>Experience</span></h1>
+  <p class="page-lead">Real-world internships in Data Analytics, Generative AI, and Data Science at leading institutions across India.</p>
+</div>
+
+<div class="content">
+  <a href="index.html" class="back-link">← Back to Home</a>
+  <div class="exp-grid">
+
+    <!-- Internship 2: ISI Kolkata -->
+    <div class="exp-card">
+      <div class="exp-header">
+        <div class="exp-logo">🔬</div>
+        <div>
+          <div class="exp-org">IDEAS Technology Innovation Hub</div>
+          <div class="exp-role">@ ISI Kolkata (Indian Statistical Institute)</div>
+        </div>
+        <div class="exp-badge">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;animation:pulse 1.5s ease-in-out infinite;"></span>
+          Recent
+        </div>
+      </div>
+      <div class="exp-body">
+        <div class="exp-meta-row">
+          <div class="exp-meta-item">
+            <span class="exp-meta-label">Role</span>
+            <span class="exp-meta-value">Data Science Intern</span>
+          </div>
+          <div class="exp-meta-item">
+            <span class="exp-meta-label">Type</span>
+            <span class="exp-meta-value">Summer Internship</span>
+          </div>
+          <div class="exp-meta-item">
+            <span class="exp-meta-label">Year</span>
+            <span class="exp-meta-value">2026</span>
+          </div>
+          <div class="exp-meta-item">
+            <span class="exp-meta-label">Location</span>
+            <span class="exp-meta-value">ISI Kolkata, West Bengal</span>
+          </div>
+        </div>
+        <p class="exp-desc">
+          Completed a Summer Internship at the IDEAS Technology Innovation Hub — a premier research-driven institution housed within the Indian Statistical Institute, Kolkata. Worked on data science problems involving statistical modelling, exploratory data analysis, and machine learning pipelines. The internship provided exposure to cutting-edge research methodologies and collaboration with domain experts in applied data science.
+        </p>
+        <div class="exp-tags">
+          <span class="exp-tag">Data Science</span>
+          <span class="exp-tag">Statistical Modelling</span>
+          <span class="exp-tag">Machine Learning</span>
+          <span class="exp-tag">EDA</span>
+          <span class="exp-tag">Python</span>
+          <span class="exp-tag">Research</span>
+        </div>
+        <div class="exp-quote">
+          <p>Working at ISI Kolkata exposed me to rigorous statistical thinking — the kind that elevates data science from tool-usage to true analytical mastery.</p>
+        </div>
+        <div class="exp-links" style="margin-top:1.5rem;">
+          <a href="#" class="cert-link"><span class="icon">🏆</span> View Certificate</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-connector">│</div>
+
+    <!-- Internship 1: Anwesha Academy -->
+    <div class="exp-card">
+      <div class="exp-header">
+        <div class="exp-logo">📊</div>
+        <div>
+          <div class="exp-org">Anwesha Academy</div>
+          <div class="exp-role">Data Analytics & Generative AI Division</div>
+        </div>
+        <div class="exp-badge" style="border-color:rgba(126,184,232,0.3);color:var(--accent2);">
+          Completed
+        </div>
+      </div>
+      <div class="exp-body">
+        <div class="exp-meta-row">
+          <div class="exp-meta-item">
+            <span class="exp-meta-label">Role</span>
+            <span class="exp-meta-value">Data Analytics & GenAI Intern</span>
+          </div>
+          <div class="exp-meta-item">
+            <span class="exp-meta-label">Type</span>
+            <span class="exp-meta-value">Internship</span>
+          </div>
+          <div class="exp-meta-item">
+            <span class="exp-meta-label">Year</span>
+            <span class="exp-meta-value">2025</span>
+          </div>
+          <div class="exp-meta-item">
+            <span class="exp-meta-label">Domain</span>
+            <span class="exp-meta-value">Data Analytics · GenAI</span>
+          </div>
+        </div>
+        <p class="exp-desc">
+          Served as a Data Analytics &amp; GenAI Intern at Anwesha Academy, gaining hands-on experience in the analysis of complex datasets, building data-driven pipelines, and exploring Generative AI tools and applications. Worked with real-world data to generate actionable insights and contributed to projects involving natural language processing and AI-assisted analytics.
+        </p>
+        <div class="exp-tags">
+          <span class="exp-tag">Data Analytics</span>
+          <span class="exp-tag">Generative AI</span>
+          <span class="exp-tag">NLP</span>
+          <span class="exp-tag">Python</span>
+          <span class="exp-tag">Visualization</span>
+          <span class="exp-tag">LLMs</span>
+        </div>
+        <div class="exp-quote">
+          <p>My time at Anwesha Academy introduced me to the transformative potential of Generative AI in data workflows — it reshaped how I think about automation and intelligence in analytics.</p>
+        </div>
+        <div class="exp-links" style="margin-top:1.5rem;">
+          <a href="#" class="cert-link"><span class="icon">🏆</span> View Certificate</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /exp-grid -->
+
+  <div class="highlight-stat-row">
+    <div class="hs-cell">
+      <div class="hs-num">2</div>
+      <div class="hs-label">Internships Completed</div>
+    </div>
+    <div class="hs-cell">
+      <div class="hs-num">ISI</div>
+      <div class="hs-label">Kolkata Research Hub</div>
+    </div>
+    <div class="hs-cell">
+      <div class="hs-num">2</div>
+      <div class="hs-label">Certificates Earned</div>
+    </div>
+    <div class="hs-cell">
+      <div class="hs-num">GenAI</div>
+      <div class="hs-label">& Data Science Focus</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-brand">Arik Mukherjee</div>
+  <div class="footer-links">
+    <a href="https://github.com/arikmukherjee" target="_blank">GitHub</a>
+    <a href="https://www.linkedin.com/in/arikmukherjee/" target="_blank">LinkedIn</a>
+    <a href="mailto:arikmukherjee2022@gmail.com">Email</a>
+  </div>
+  <div class="footer-copy">© 2025 Arik Mukherjee</div>
+</footer>
+<style>@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}</style>
+</body>
+</html>
